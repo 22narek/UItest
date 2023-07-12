@@ -56,6 +56,7 @@ class _TestComponent extends State<DottedComponent> {
                   setState(() {
                     initWidgetWidth = newValue!;
                     controller.text = initWidgetWidth.toString();
+                    dottedWidth = initWidgetWidth;
                   });
                 },
                 items: _dropdownValues.map((value) {
@@ -65,7 +66,6 @@ class _TestComponent extends State<DottedComponent> {
                   );
                 }).toList(),
                 decoration: const InputDecoration(
-                  hintText: 'Widget width',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -73,45 +73,43 @@ class _TestComponent extends State<DottedComponent> {
           ),
           SizedBox(
             width: initWidgetWidth,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: dottedWidth > 10 ? 0 : 1,
-                    child: Text(
-                      widget.text,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: dottedWidth > 10 ? 0 : 1,
+                  child: Text(
+                    widget.text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  dottedWidth > 10
-                      ? Expanded(
-                          child: LayoutBuilder(
-                            builder: (
-                              BuildContext context,
-                              BoxConstraints constraints,
-                            ) {
-                              final newWidth = constraints.maxWidth / 2;
-                              if (newWidth != dottedWidth) {
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  setState(() {
-                                    dottedWidth = newWidth;
-                                  });
+                ),
+                dottedWidth > 10
+                    ? Expanded(
+                        child: LayoutBuilder(
+                          builder: (
+                            BuildContext context,
+                            BoxConstraints constraints,
+                          ) {
+                            final newWidth = constraints.maxWidth / 2;
+                            if (newWidth != dottedWidth ) {
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback((_) {
+                                setState(() {
+                                  dottedWidth = newWidth;
                                 });
-                              }
-                              return const DottedLine();
-                            },
-                          ),
-                        )
-                      : const SizedBox(),
-                  Checkbox(
-                    value: widget.isChecked,
-                    onChanged: (_) {},
-                  ),
-                ],
-              ),
+                              });
+                            }
+                            return const DottedLine();
+                          },
+                        ),
+                      )
+                    : const SizedBox(),
+                Checkbox(
+                  value: widget.isChecked,
+                  onChanged: (_) {},
+                ),
+              ],
             ),
           ),
         ],
